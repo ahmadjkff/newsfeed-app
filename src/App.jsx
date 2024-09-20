@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [articles, setArticles] = useState([]);
-  const [query, setQuery] = useState("");
 
   async function loadData(inputQuery, country) {
     const response = await fetch(
