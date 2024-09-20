@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   async function loadData(inputQuery, country) {
     const response = await fetch(
@@ -21,21 +22,27 @@ function App() {
     });
   }
 
-  console.log("aaaaaaaaaa");
-
   useEffect(() => {
-    loadData("").then(setArticles);
+    setLoading(true);
+    loadData("").then((newData) => {
+      setArticles(newData);
+      setLoading(false);
+    });
     // loadData().then((data) => setArticles(data));
   }, []);
 
   const handleSearchChange = (newQuery) => {
-    loadData(newQuery).then(setArticles);
+    setLoading(true);
+    loadData(newQuery).then((newData) => {
+      setArticles(newData);
+      setLoading(false);
+    });
   };
 
   return (
     <Container>
       <NewsHeader onSearchChange={handleSearchChange} />
-      <NewsFeed articles={articles} />
+      <NewsFeed articles={articles} loading={loading} />
     </Container>
   );
 }
