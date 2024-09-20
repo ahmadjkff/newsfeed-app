@@ -7,7 +7,7 @@ function App() {
   const [articles, setArticles] = useState([]);
   const [query, setQuery] = useState("");
 
-  async function loadData(inputQuery) {
+  async function loadData(inputQuery, country) {
     const response = await fetch(
       `https://newsapi.org/v2/top-headlines?q=${inputQuery}&country=us&apiKey=${
         import.meta.env.VITE_NEWS_FEED_API_KEY
@@ -22,14 +22,20 @@ function App() {
     });
   }
 
+  console.log("aaaaaaaaaa");
+
   useEffect(() => {
-    loadData(query).then(setArticles);
+    loadData("").then(setArticles);
     // loadData().then((data) => setArticles(data));
-  }, [query]);
+  }, []);
+
+  const handleSearchChange = (newQuery) => {
+    loadData(newQuery).then(setArticles);
+  };
 
   return (
     <Container>
-      <NewsHeader onSearchChange={setQuery} />
+      <NewsHeader onSearchChange={handleSearchChange} />
       <NewsFeed articles={articles} />
     </Container>
   );
