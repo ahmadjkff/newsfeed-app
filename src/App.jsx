@@ -5,10 +5,11 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [articles, setArticles] = useState([]);
+  const [query, setQuery] = useState("");
 
-  async function loadData() {
+  async function loadData(inputQuery) {
     const response = await fetch(
-      `https://newsapi.org/v2/top-headlines?country=us&apiKey=${
+      `https://newsapi.org/v2/top-headlines?q=${inputQuery}&country=us&apiKey=${
         import.meta.env.VITE_NEWS_FEED_API_KEY
       }`
     );
@@ -22,13 +23,13 @@ function App() {
   }
 
   useEffect(() => {
-    loadData().then(setArticles);
+    loadData(query).then(setArticles);
     // loadData().then((data) => setArticles(data));
-  }, []);
+  }, [query]);
 
   return (
     <Container>
-      <NewsHeader />
+      <NewsHeader onSearchChange={setQuery} />
       <NewsFeed articles={articles} />
     </Container>
   );
