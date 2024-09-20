@@ -2,11 +2,10 @@ import NewsArticle from "./NewsArticle";
 
 function NewsFeed(props) {
   const { articles } = props;
-  console.log(articles);
 
   return (
     <div>
-      {articles.map((article, index) => (
+      {articles.map((article) => (
         <NewsArticle key={JSON.stringify(article)} {...article} />
       ))}
     </div>

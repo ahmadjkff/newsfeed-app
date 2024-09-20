@@ -1,43 +1,35 @@
 import { Container } from "@mui/material";
 import NewsHeader from "./components/NewsHeader";
 import NewsFeed from "./components/NewsFeed";
-
-const sampleArticles = [
-  {
-    title: "Test News 1",
-    description: "This is a test news description 1.",
-    image: "https://placehold.co/150",
-    author: "John Doe",
-    publishedAt: "2023-03-01T12:00:00Z",
-  },
-  {
-    title: "Test News 2",
-    description: "This is a test news description 2.",
-    image: "https://placehold.co/150",
-    author: "Jane Smith",
-    publishedAt: "2023-04-01T12:00:00Z",
-  },
-  {
-    title: "Test News 3",
-    description: "This is a test news description 3.",
-    image: "https://placehold.co/150",
-    author: "John Doe",
-    publishedAt: "2023-05-01T12:00:00Z",
-  },
-  {
-    title: "Test News 4",
-    description: "This is a test news description 4.",
-    image: "https://placehold.co/150",
-    author: "Jane Smith",
-    publishedAt: "2023-06-01T12:00:00Z",
-  },
-];
+import { useEffect, useState } from "react";
 
 function App() {
+  const [articles, setArticles] = useState([]);
+
+  async function loadData() {
+    const response = await fetch(
+      `https://newsapi.org/v2/top-headlines?country=us&apiKey=${
+        import.meta.env.VITE_NEWS_FEED_API_KEY
+      }`
+    );
+
+    const data = await response.json();
+
+    return data.articles.map((article) => {
+      const { title, description, author, publishedAt, urlToImage } = article;
+      return { title, description, author, publishedAt, image: urlToImage };
+    });
+  }
+
+  useEffect(() => {
+    loadData().then(setArticles);
+    // loadData().then((data) => setArticles(data));
+  }, []);
+
   return (
     <Container>
       <NewsHeader />
-      <NewsFeed articles={sampleArticles} />
+      <NewsFeed articles={articles} />
     </Container>
   );
 }
