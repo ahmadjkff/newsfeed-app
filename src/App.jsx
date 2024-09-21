@@ -10,6 +10,8 @@ const Footer = styled("div")(({ theme }) => ({
   justifyContent: "space-between",
 }));
 
+const PAGE_SIZE = 5;
+
 function App() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -20,7 +22,9 @@ function App() {
     const response = await fetch(
       `https://newsapi.org/v2/top-headlines?q=${queryValue.current}&page=${
         pageNumber.current
-      }&pageSize=5&country=us&apiKey=${import.meta.env.VITE_NEWS_FEED_API_KEY}`
+      }&pageSize=${PAGE_SIZE}&country=us&apiKey=${
+        import.meta.env.VITE_NEWS_FEED_API_KEY
+      }`
     );
 
     const data = await response.json();
@@ -39,7 +43,7 @@ function App() {
     });
   };
 
-  const debouncedLoadData = debounce(() => fetchAndUpdateArticles, 500);
+  const debouncedLoadData = debounce(() => fetchAndUpdateArticles(), 500);
 
   useEffect(() => {
     fetchAndUpdateArticles();
@@ -67,10 +71,18 @@ function App() {
       <NewsHeader onSearchChange={handleSearchChange} />
       <NewsFeed articles={articles} loading={loading} />
       <Footer>
-        <Button variant="outlined" onClick={handlePreviousClick}>
+        <Button
+          variant="outlined"
+          onClick={handlePreviousClick}
+          disabled={pageNumber.current === 1}
+        >
           previous
         </Button>
-        <Button variant="outlined" onClick={handleNextClick}>
+        <Button
+          variant="outlined"
+          onClick={handleNextClick}
+          disabled={articles.length < PAGE_SIZE}
+        >
           Next
         </Button>
       </Footer>
