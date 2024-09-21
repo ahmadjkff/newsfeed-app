@@ -2,6 +2,7 @@ import { Container } from "@mui/material";
 import NewsHeader from "./components/NewsHeader";
 import NewsFeed from "./components/NewsFeed";
 import { useEffect, useState } from "react";
+import { debounce } from "lodash";
 
 function App() {
   const [articles, setArticles] = useState([]);
@@ -22,6 +23,14 @@ function App() {
     });
   }
 
+  const debouncedLoadData = debounce((newQuery) => {
+    setLoading(true);
+    loadData(newQuery).then((newData) => {
+      setArticles(newData);
+      setLoading(false);
+    });
+  }, 500);
+
   useEffect(() => {
     setLoading(true);
     loadData("").then((newData) => {
@@ -32,11 +41,7 @@ function App() {
   }, []);
 
   const handleSearchChange = (newQuery) => {
-    setLoading(true);
-    loadData(newQuery).then((newData) => {
-      setArticles(newData);
-      setLoading(false);
-    });
+    debouncedLoadData(newQuery);
   };
 
   return (
