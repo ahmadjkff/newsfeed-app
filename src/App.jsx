@@ -36,8 +36,16 @@ function App() {
     }
 
     return data.articles.map((article) => {
-      const { title, description, author, publishedAt, urlToImage } = article;
-      return { title, description, author, publishedAt, image: urlToImage };
+      const { title, description, author, publishedAt, urlToImage, url } =
+        article;
+      return {
+        title,
+        description,
+        author,
+        publishedAt,
+        image: urlToImage,
+        url,
+      };
     });
   }
 
