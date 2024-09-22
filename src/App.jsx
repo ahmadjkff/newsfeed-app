@@ -16,14 +16,15 @@ function App() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [category, setCategory] = useState("general");
   const pageNumber = useRef(1);
   const queryValue = useRef("");
 
-  async function loadData() {
+  async function loadData(currentCategory) {
     const response = await fetch(
-      `https://newsapi.org/v2/top-headlines?q=${queryValue.current}&page=${
-        pageNumber.current
-      }&pageSize=${PAGE_SIZE}&country=us&apiKey=${
+      `https://newsapi.org/v2/top-headlines?category=${currentCategory}&q=${
+        queryValue.current
+      }&page=${pageNumber.current}&pageSize=${PAGE_SIZE}&country=us&apiKey=${
         import.meta.env.VITE_NEWS_FEED_API_KEY
       }`
     );
@@ -40,10 +41,10 @@ function App() {
     });
   }
 
-  const fetchAndUpdateArticles = () => {
+  const fetchAndUpdateArticles = (currentCategory) => {
     setLoading(true);
     setError("");
-    loadData()
+    loadData(currentCategory ?? category)
       .then((newData) => {
         setArticles(newData);
       })
@@ -78,9 +79,19 @@ function App() {
     fetchAndUpdateArticles();
   };
 
+  const handleCategoryChange = (event) => {
+    setCategory(event.target.value);
+    pageNumber.current = 1;
+    fetchAndUpdateArticles(event.target.value);
+  };
+
   return (
     <Container>
-      <NewsHeader onSearchChange={handleSearchChange} />
+      <NewsHeader
+        onSearchChange={handleSearchChange}
+        category={category}
+        onCategoryChange={handleCategoryChange}
+      />
       {error.length === 0 ? (
         <NewsFeed articles={articles} loading={loading} />
       ) : (
