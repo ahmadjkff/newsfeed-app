@@ -29,9 +29,11 @@ function App() {
     );
 
     const data = await response.json();
+
     if (data.status === "error") {
-      throw new Error("an error has occured");
+      throw new Error("An error has occured");
     }
+
     return data.articles.map((article) => {
       const { title, description, author, publishedAt, urlToImage } = article;
       return { title, description, author, publishedAt, image: urlToImage };
@@ -90,14 +92,14 @@ function App() {
         <Button
           variant="outlined"
           onClick={handlePreviousClick}
-          disabled={pageNumber.current === 1}
+          disabled={loading || pageNumber.current === 1}
         >
           previous
         </Button>
         <Button
           variant="outlined"
           onClick={handleNextClick}
-          disabled={articles.length < PAGE_SIZE}
+          disabled={loading || articles.length < PAGE_SIZE}
         >
           Next
         </Button>
